@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Translation Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f8fafc; background-image: radial-gradient(#0028681a 0.5px, transparent 0.5px); background-size: 20px 20px; }
+        .hub-card { background: white; border-top: 6px solid #ff9933; border-bottom: 6px solid #138808; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .recording { animation: pulse 1.5s infinite; background: #ef4444 !important; }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6">
+
+    <div class="text-center mb-8">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" class="h-16 mx-auto mb-3">
+        <h1 class="text-3xl font-bold text-blue-900">NATIONAL TRANSLATION HUB</h1>
+        <p class="text-gray-500 text-sm font-bold tracking-widest uppercase">Citizen Language Portal</p>
+    </div>
+
+    <div class="w-full max-w-5xl hub-card rounded-2xl overflow-hidden grid md:grid-cols-2 divide-x divide-gray-100">
+        
+        <div class="p-8 space-y-4">
+            <label class="text-xs font-black text-gray-400 uppercase">Input Language</label>
+            <select id="inputLang" class="w-full p-3 bg-gray-50 border-2 border-gray-100 rounded-xl font-bold outline-none focus:border-orange-400">
+                <optgroup label="Foreign">
+                    <option value="en-US">English (US)</option>
+                    <option value="fr-FR">French (Français)</option>
+                    <option value="de-DE">German (Deutsch)</option>
+                    <option value="ja-JP">Japanese (日本語)</option>
+                    <option value="es-ES">Spanish (Español)</option>
+                </optgroup>
+                <optgroup label="Indian">
+                    <option value="hi-IN" selected>Hindi (हिन्दी)</option>
+                    <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
+                    <option value="bn-IN">Bengali (বাংলা)</option>
+                    <option value="te-IN">Telugu (తెలుగు)</option>
+                    <option value="ta-IN">Tamil (தமிழ்)</option>
+                    <option value="mr-IN">Marathi (मराठी)</option>
+                    <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+                    <option value="ml-IN">Malayalam (മലയാളം)</option>
+                    <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
+                    <option value="ur-IN">Urdu (اردو)</option>
+                    <option value="or-IN">Odia (ଓଡ଼ିଆ)</option>
+                    <option value="as-IN">Assamese (অসমীয়া)</option>
+                    <option value="ne-NP">Nepali (नेपाली)</option>
+                    <option value="sa-IN">Sanskrit (संस्कृतम्)</option>
+                    <option value="sd-IN">Sindhi (सिंधी)</option>
+                </optgroup>
+            </select>
+
+            <div class="relative">
+                <textarea id="transcript" class="w-full h-64 p-5 bg-gray-50 rounded-2xl border-none outline-none text-lg resize-none shadow-inner" placeholder="Type or click the mic..."></textarea>
+                <button id="recordBtn" class="absolute bottom-4 right-4 w-14 h-14 bg-orange-500 text-white rounded-full shadow-lg flex items-center justify-center transition-all active:scale-90">
+                    <i class="fas fa-microphone text-xl"></i>
+                </button>
+            </div>
+            <button onclick="manualTranslate()" class="w-full py-4 bg-blue-900 text-white font-bold rounded-xl uppercase hover:bg-black transition-all">Translate</button>
+        </div>
+
+        <div class="p-8 bg-gray-50/30 space-y-4">
+            <label class="text-xs font-black text-gray-400 uppercase">Output Language</label>
+            <select id="outputLang" class="w-full p-3 bg-white border-2 border-gray-100 rounded-xl font-bold outline-none text-blue-900">
+                <option value="en">English</option>
+                <option value="hi">Hindi (हिन्दी)</option>
+                <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                <option value="bn">Bengali (বাংলা)</option>
+                <option value="te">Telugu (తెలుగు)</option>
+                <option value="ta">Tamil (தமிழ்)</option>
+                <option value="mr">Marathi (मराठी)</option>
+                <option value="gu">Gujarati (ગુજરાતી)</option>
+                <option value="ml">Malayalam (മലയാളം)</option>
+                <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+                <option value="ur">Urdu (اردو)</option>
+                <option value="or">Odia (ଓଡ଼ିଆ)</option>
+                <option value="as">Assamese (অসমীয়া)</option>
+                <option value="fr">French (Français)</option>
+                <option value="de">German (Deutsch)</option>
+                <option value="ja">Japanese (日本語)</option>
+                <option value="es">Spanish (Español)</option>
+                <option value="ne">Nepali (नेपाली)</option>
+                <option value="sa">Sanskrit (संस्कृतम्)</option>
+                <option value="sd">Sindhi (सिंधी)</option>
+            </select>
+
+            <div class="h-64 p-6 bg-white rounded-2xl border border-gray-100 shadow-inner flex items-center justify-center overflow-y-auto">
+                <p id="translatedText" class="text-xl text-center italic opacity-30">Translation result...</p>
+            </div>
+            <button id="speakBtn" class="w-full py-4 border-2 border-green-600 text-green-700 font-bold rounded-xl flex items-center justify-center gap-3 hover:bg-green-600 hover:text-white transition-all">
+                <i class="fas fa-volume-up"></i> Play Audio
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        const recordBtn = document.getElementById('recordBtn');
+        const transcriptArea = document.getElementById('transcript');
+        let currentAudio = null;
+
+        recordBtn.onclick = () => {
+            // CRITICAL FIX: Dynamically set the recognition language before starting
+            recognition.lang = document.getElementById('inputLang').value;
+            recognition.start();
+            recordBtn.classList.add('recording');
+        };
+
+        recognition.onresult = (event) => {
+            const text = event.results[0][0].transcript;
+            transcriptArea.value = text;
+            recordBtn.classList.remove('recording');
+            translateText(text);
+        };
+
+        recognition.onend = () => recordBtn.classList.remove('recording');
+
+        async function manualTranslate() {
+            const text = transcriptArea.value;
+            if(!text.trim()) return alert("Please provide input!");
+            await translateText(text);
+        }
+
+        async function translateText(text) {
+            const target = document.getElementById('outputLang').value;
+            const destLabel = document.getElementById('translatedText');
+            destLabel.innerHTML = "Processing...";
+            destLabel.classList.remove('opacity-30');
+
+            try {
+                const response = await fetch('/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, dest_lang: target })
+                });
+                const data = await response.json();
+                destLabel.innerText = data.translated_text;
+
+                document.getElementById('speakBtn').onclick = () => {
+                    if(!data.audio_url || data.audio_url.includes("None")) {
+                        return alert("Voice not supported for this specific language.");
+                    }
+                    if(currentAudio) currentAudio.pause();
+                    currentAudio = new Audio(data.audio_url);
+                    currentAudio.play();
+                };
+            } catch (e) { destLabel.innerText = "Error."; }
+        }
+    </script>
+</body>
+</html>
